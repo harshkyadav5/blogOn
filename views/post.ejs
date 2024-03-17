@@ -1,0 +1,24 @@
+<%- include("partials/header.ejs") %>
+
+<h1>Create Blog</h1>
+
+<form action="/" method="POST" class="createPost">
+    <div>
+        <label>Title</label>
+        <input type="text" name="blogTitle" placeholder="Title of blog . . ." minlength="1" maxlength="200" required/>
+    </div>
+    <div>
+        <label>Author</label>
+        <input type="text" name="blogAuthor" placeholder="Author name . . ." minlength="1" maxlength="100" required/>
+    </div>
+    <div>
+        <label>Content</label>
+        <!-- <input type="text" name="postBody" minlength="1" maxlength="10000" required/> -->
+        <textarea type="text" name="postBody" placeholder=". . ." maxlength="10000" required></textarea>
+    </div>
+    <div id="formButton">
+        <input type="submit" id="submit" value="Post Blog">
+    </div>
+</form>
+
+<%- include("partials/footer.ejs") %>

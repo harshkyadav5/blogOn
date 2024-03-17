@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Comfortaa", sans-serif;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.5% 2% 0.5% 5%;
+    background: rgb(237, 237, 237);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+    border-bottom: 1.5px solid rgb(184, 184, 184);
+}
+
+.title {
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-size: 1.75rem;
+}
+
+.title:hover {
+    cursor: default;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation .tab{
+    text-decoration: none;
+    position: relative;
+    padding: 10px 0px;
+    margin-left: 20px;
+    font-weight: 700;
+    color: #493593;
+    font-size: 1.20em;
+}
+
+.navigation .tab::after {
+    content: ' ';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: #493593;
+    border-radius: 5px;
+    left: 0;
+    bottom: 2px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s;
+}
+
+.navigation .tab:hover::after {
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.profile {
+    width: auto;
+    height: 55px;
+    padding: 0px 14px;
+    font-size: 1em;
+    font-weight: 500;
+    margin-left: 20px;
+    background: transparent;
+    border: 2px solid #493593;
+    border-radius: 50px;
+    color: rgb(114, 114, 114);
+    cursor: pointer;
+    transition: all 0.5s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profileImage {
+    border: 2px solid rgb(184, 184, 184);
+    border-radius: 50%;
+    height: 40px;
+}
+#profileName {
+    padding-left: 8px;
+}
+
+.profile:hover {
+    background: #493593;
+    color: white;
+    box-shadow: #838681 0px 5px 10px;
+}
+
+/* main body */
+body{
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+main {
+    /* padding: 100px 80px 50px 80px; */
+    padding: 100px 6% 50px 6%;
+}
+
+h1 {
+    padding-left: 25px;
+    padding-bottom: 20px;
+}
+
+.createPost * {
+    font-family: "Quicksand", sans-serif;
+}
+
+.createPost {
+    display: grid;
+    background: #e7e3f8;
+    padding: 10%;
+    border-radius: 10px;
+    outline: none;
+}
+
+
+h1 {
+    color: #838681;
+}
+
+.createPost div {
+    display: grid;
+    /* margin: 30px 0 5px 15px; */
+}
+
+#formButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.createPost input[type = text], textarea {
+    background: #d8d2ef;
+    border: 2px solid gray;
+    border-radius: 15px;
+    padding: 15px 40px 15px 40px;
+    outline: none;
+    font-size: 1.2rem;
+    font-weight: 300;
+    width: 100%;
+    transition: all 0.25s ease-in-out;
+}
+
+.createPost textarea {
+    resize: none;
+    height: 400px;
+}
+
+.createPost input[type = text]:focus, textarea:focus {
+    border: 2px solid #493593;
+    font-weight: 500;
+    scale: 1.02;
+}
+
+.createPost label {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 30px 0 7px 15px;
+}
+
+#submit {
+    width: fit-content;
+    margin: 30px 0 5px 0px;
+    padding: 10px;
+    outline: none;
+    border: 2px solid grey;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    background: none;
+    transition: all 0.15s ease-in-out;
+}
+
+#submit:hover {
+    border: 2px solid #493593;
+    font-weight: 500;
+    scale: 1.03;
+}
+
+
+/* footer */
+footer {
+    background: black;
+    color: aliceblue;
+    width: 100vw;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+.top {
+    border: 0 solid transparent;
+    width: 20%;
+    margin: 1rem auto;
+    border-bottom: 0.20rem dotted #3e6373da;
+}
+.bottom {
+    border: 0 solid transparent;
+    width: 20%;
+    margin: 1rem auto;
+    border-top: 0.20rem dotted #3e6373da;
+}
+
+/* .socialHandels{
+    transition: opacity 1s ease 5ms;
+}
+.socialHandels:hover{
+    opacity: 0.7;
+} */
+
+i {
+    font-size: 2.2em;
+    color: aliceblue;
+}
+.copyright {
+    cursor: default;
+    text-align: center;
+}
