@@ -4,6 +4,13 @@
 
 <div id="postContainer">
     <ul id="postsList">
+
+        <% if (posts.length === 0) {%>
+            <div class="blankPosts">
+                <a href="post.ejs">Post Blog</a>
+            </div>
+        <% } %>
+
         <% posts.forEach(post=> { %>
             <li>
                 <h2>
@@ -16,7 +23,8 @@
                     <%=post.content%>
                 </p>
                 <small>By: <%=post.author%> </small>
-                <a class="edit" href="/edit/<%= post.id %>">Edit</a>
+                <!-- <a class="edit" href="/edit/<%= post.id %>">Edit</a> -->
+                <a class="edit" href="/<%= post.id %>">Edit</a>
                 <a class="delete" href="/delete/<%= post.id %>">Delete</a>
             </li>
         <% }); %>

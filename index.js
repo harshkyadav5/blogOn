@@ -69,7 +69,8 @@ app.post('/posts', (req, res) => {
     res.redirect('/');
 });
 
-app.get('/edit/:id', (req, res) => {
+// app.get('/edit/:id', (req, res) => {
+app.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = posts.findIndex((p) => p.id === id);
     res.render("post.ejs", {
@@ -87,7 +88,8 @@ app.get('/edit/:id', (req, res) => {
 //     });
 // });
 
-app.put('/posts/:id', (req, res) => {
+// app.put('/posts/:id', (req, res) => {
+app.post('/posts/:id', (req, res) => {
     // const id = parseInt(req.params.id);
     // posts[id].title = req.body.title;
     // posts[id].author = req.body.author;
@@ -101,6 +103,7 @@ app.put('/posts/:id', (req, res) => {
         title: req.body.title,
         author: req.body.author,
         content: req.body.content,
+        date: new Date(),
     };
     const searchIndex = posts.findIndex((post) => post.id === id);
     posts[searchIndex] = replacementPost;

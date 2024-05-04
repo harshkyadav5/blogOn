@@ -3,7 +3,7 @@
 
 <% if (locals.post) { %>
     <h1>Edit Blog</h1>
-    <form action="/posts/<%= post.id %>" method="PUT" class="createPost">
+    <form action="/posts/<%= post.id %>" method="POST" class="createPost">
         <div>
             <label>Title</label>
             <!-- <input type="text" name="blogTitle" placeholder="Title of blog . . ." minlength="1" maxlength="200" required/> -->
@@ -21,7 +21,7 @@
             <textarea type="text" name="content" placeholder=". . ." maxlength="10000" required><%=post.content %></textarea>
         </div>
         <div id="formButton">
-            <input type="submit" id="submit" value="Post Blog">
+            <input type="submit" id="submit" value="Update Blog">
         </div>
     </form>
     <% } else { %>
