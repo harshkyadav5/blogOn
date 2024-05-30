@@ -1,122 +1,110 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import pg from 'pg';
+import env from 'dotenv';
+// import { parse } from 'path';
 
 const app = express();
 const port = 3000;
+env.config();
+
+const db = new pg.Client({
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
+});
+db.connect(err => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('Connected to the database');
+    }
+});
 
 app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.set('view engine', 'ejs');
 
 
-let posts = [
-    {
-      id: 1,
-      title: "The Rise of Decentralized Finance",
-      content:
-        "Decentralized Finance (DeFi) is an emerging and rapidly evolving field in the blockchain industry. It refers to the shift from traditional, centralized financial systems to peer-to-peer finance enabled by decentralized technologies built on Ethereum and other blockchains. With the promise of reduced dependency on the traditional banking sector, DeFi platforms offer a wide range of services, from lending and borrowing to insurance and trading.",
-      author: "Alex Thompson",
-      date: "2023-08-01T10:00:00Z",
-    },
-    {
-      id: 2,
-      title: "The Impact of Artificial Intelligence on Modern Businesses",
-      content:
-        "Artificial Intelligence (AI) is no longer a concept of the future. It's very much a part of our present, reshaping industries and enhancing the capabilities of existing systems. From automating routine tasks to offering intelligent insights, AI is proving to be a boon for businesses. With advancements in machine learning and deep learning, businesses can now address previously insurmountable problems and tap into new opportunities.",
-      author: "Mia Williams",
-      date: "2023-08-05T14:30:00Z",
-    },
-    {
-      id: 3,
-      title: "Sustainable Living: Tips for an Eco-Friendly Lifestyle",
-      content:
-        "Sustainability is more than just a buzzword; it's a way of life. As the effects of climate change become more pronounced, there's a growing realization about the need to live sustainably. From reducing waste and conserving energy to supporting eco-friendly products, there are numerous ways we can make our daily lives more environmentally friendly. This post will explore practical tips and habits that can make a significant difference.",
-      author: "Samuel Green",
-      date: "2023-08-10T09:15:00Z",
-    },
-  ];
-
-let lastId = 3;
-
-
-app.get('/', (req, res) => {
-    // const {blogTitle, blogAuthor, blogBody} = req.body;
-    res.render("index.ejs",
-    {
-        posts,
-    });
+app.get('/', async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM posts ORDER BY date DESC');
+        res.render("index.ejs", {
+            posts: result.rows,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching posts');
+    }
 });
 
 app.get('/post.ejs', (req, res) => {
     res.render("post.ejs");
 });
 
-app.post('/posts', (req, res) => {
-    // const {blogTitle, blogAuthor, blogBody} = req.body;
-    // const {title, author, content} = req.body;
-    const newId = lastId += 1;
-    const post = {
-        id: newId,
-        title: req.body.title,
-        author: req.body.author,
-        content: req.body.content,
-        date: new Date(),
-    };
-    lastId = newId;
-    console.log(post);
-    posts.push(post);
-    res.redirect('/');
+app.post('/posts', async (req, res) => {
+    const {title, author, content } = req.body;
+    try {
+        const result = await db.query(
+            'INSERT INTO posts (title, author, content, date) VALUES ($1, $2, $3, $4) RETURNING id',
+            [title, author, content, new Date()]
+        );
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error creating post');
+    }
 });
 
-// app.get('/edit/:id', (req, res) => {
-app.get('/:id', (req, res) => {
+app.get('/:id', async (req, res) => {
     const id = parseInt(req.params.id);
-    const index = posts.findIndex((p) => p.id === id);
-    res.render("post.ejs", {
-        post: posts[index],
-    });
+    try {
+        const result = await db.query('SELECT * FROM posts WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).send('Post not found');
+        }
+        res.render("post.ejs", {
+            post: result.rows[0],
+        });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error fetching post');
+    }
 });
 
-// app.get("/posts/:id", (req, res) => {
-//     const id = parseInt(req.params.id);
-//     const foundPost = posts.find((post) => post.id === id);
-//     const post = posts[foundPost];
-//     res.render('/posts', {
-//         // post,
-//         foundPost, id,
-//     });
-// });
-
-// app.put('/posts/:id', (req, res) => {
-app.post('/posts/:id', (req, res) => {
-    // const id = parseInt(req.params.id);
-    // posts[id].title = req.body.title;
-    // posts[id].author = req.body.author;
-    // posts[id].content = req.body.content;
-    // res.redirect("/");
-
+app.post('/posts/:id', async (req, res) => {
 
     const id = parseInt(req.params.id);
-    const replacementPost = {
-        id: id,
-        title: req.body.title,
-        author: req.body.author,
-        content: req.body.content,
-        date: new Date(),
-    };
-    const searchIndex = posts.findIndex((post) => post.id === id);
-    posts[searchIndex] = replacementPost;
-    res.redirect('/');
-    // res.json(replacementPost);
+    const { title, author, content } = req.body;
+    try {
+        await db.query(
+            'UPDATE posts SET title = $1, author = $2, content = $3, date = $4 WHERE id = $5',
+            [title, author, content, new Date(), id]
+        );
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating post');
+    }
 });
 
-app.get('/delete/:id', (req, res) => {
-    const index = posts.findIndex((p) => p.id === parseInt(req.params.id));
-    if (index === -1) return res.status(404).json({ message: "Post not found" });
-
-    posts.splice(index, 1);
-    res.redirect("/");
+app.get('/delete/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const result = await db.query('DELETE FROM posts WHERE id = $1', [id]);
+        if (result.rowCount === 0) {
+            return res.status(404).send('Post not found');
+        }
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting post');
+    }
 });
 
 app.listen(port, () => {
